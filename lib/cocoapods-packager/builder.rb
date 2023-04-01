@@ -299,12 +299,17 @@ MAP
       linker_flags.reject { |e| e == "-l#{@spec.name}" || e == '-lPods-packager' }
     end
 
+    # def ios_build_options
+    #   "ARCHS=\'#{ios_architectures.join(' ')}\' OTHER_CFLAGS=\'-fembed-bitcode -Qunused-arguments\'"
+    # end
     def ios_build_options
-      "ARCHS=\'#{ios_architectures.join(' ')}\' OTHER_CFLAGS=\'-fembed-bitcode -Qunused-arguments\'"
+      "ARCHS=\'$(ARCHS_STANDARD)\' OTHER_CFLAGS=\'-fembed-bitcode -Qunused-arguments\'"
     end
 
     def ios_architectures
-      archs = %w(x86_64 i386 arm64 armv7 armv7s)
+      # archs = %w(x86_64 i386 arm64 armv7 armv7s)
+      archs = %w(x86_64 arm64)
+      # archs = %w($(ARCHS_STANDARD))
       vendored_libraries.each do |library|
         archs = `lipo -info #{library}`.split & archs
       end
